@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tüm Kayıtlar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input,
+        button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="/">Tüm Kayıtlar</a>
+        <a href="/ended-policies">Biten Poliçeler</a>
+    </nav>
+
+    <h1>Tüm Kayıtlar</h1>
+
+    <!-- Yeni kayıt ekleme formu -->
+    <form id="add-record-form">
+        <input type="text" id="name" placeholder="Ad" required>
+        <input type="text" id="surname" placeholder="Soyad" required>
+        <input type="text" id="phone" placeholder="Telefon" required>
+        <input type="text" id="policyType" placeholder="Poliçe Türü" required>
+        <input type="date" id="startDate" required>
+        <input type="date" id="endDate" required>
+        <button type="submit">Kayıt Ekle</button>
+    </form>
+
+    <!-- Tüm kayıtları göstermek için tablo -->
+    <table id="records-table" border="1">
+        <thead>
+            <tr>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Telefon</th>
+                <th>Poliçe Türü</th>
+                <th>Başlangıç Tarihi</th>
+                <th>Bitiş Tarihi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Kayıtlar buraya JavaScript ile eklenecek -->
+        </tbody>
+    </table>
+
+    <script>
+        // Tüm kayıtları getir ve göster
+        function fetchRecords() {
+            fetch('/api/records')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('#records-table tbody');
+                    tbody.innerHTML = ''; // Mevcut satırları temizle
+                    data.forEach(record => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+              <td>${record.name}</td>
+              <td>${record.surname}</td>
+              <td>${record.phone}</td>
+              <td>${record.policyType}</td>
+              <td>${record.startDate}</td>
+              <td>${record.endDate}</td>
+            `;
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        // Yeni kayıt ekle
+        document.getElementById('add-record-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const record = {
+                name: document.getElementById('name').value,
+                surname: document.getElementById('surname').value,
+                phone: document.getElementById('phone').value,
+                policyType: document.getElementById('policyType').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+            };
+
+            fetch('/api/records', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(record),
+            })
+                .then(response => response.json())
+                .then(() => {
+                    alert('Kayıt başarıyla eklendi!');
+                    fetchRecords(); // Tabloyu yenile
+                    document.getElementById('add-record-form').reset(); // Formu temizle
+                })
+                .catch(error => {
+                    console.error('Kayıt eklenirken hata oluştu:', error);
+                });
+        });
+
+        // Sayfa yüklendiğinde kayıtları getir
+        fetchRecords();
+    </script>
+</body>
+
+</html>

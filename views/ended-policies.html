@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biten Poliçeler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
+    nav a {
+      margin-right: 15px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    .filter-section label {
+      margin-right: 10px;
+    }
+    .filter-section select {
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Tüm Kayıtlar</a>
+    <a href="/ended-policies">Biten Poliçeler</a>
+  </nav>
+
+  <h1>Biten Poliçeler</h1>
+
+  <!-- Filtreleme Seçeneği -->
+  <div class="filter-section">
+    <label for="days-filter">Filtrele:</label>
+    <select id="days-filter">
+      <option value="0">Bugün Bitecekler</option>
+      <option value="3">3 Gün İçinde Bitecekler</option>
+      <option value="5">5 Gün İçinde Bitecekler</option>
+      <option value="7">7 Gün İçinde Bitecekler</option>
+      <option value="30">30 Gün İçinde Bitecekler</option>
+    </select>
+  </div>
+
+  <!-- Tablo: Biten Poliçeler -->
+  <table id="ended-policies-table" border="1">
+    <thead>
+      <tr>
+        <th>Ad</th>
+        <th>Soyad</th>
+        <th>Telefon</th>
+        <th>Poliçe Türü</th>
+        <th>Başlangıç Tarihi</th>
+        <th>Bitiş Tarihi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filtrelenmiş poliçeler buraya eklenecek -->
+    </tbody>
+  </table>
+
+  <script>
+    // Filtreleme seçeneği değiştiğinde çalışacak fonksiyon
+    document.getElementById('days-filter').addEventListener('change', (event) => {
+      const days = event.target.value; // Seçilen gün sayısı
+      fetchEndedPolicies(days); // Filtrelenmiş poliçeleri getir
+    });
+
+    // Filtrelenmiş poliçeleri getir
+    function fetchEndedPolicies(days = 0) {
+      fetch(`/api/ended-policies?days=${days}`)
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.querySelector('#ended-policies-table tbody');
+          tbody.innerHTML = ''; // Tabloyu temizle
+          data.forEach(policy => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${policy.name}</td>
+              <td>${policy.surname}</td>
+              <td>${policy.phone}</td>
+              <td>${policy.policyType}</td>
+              <td>${policy.startDate}</td>
+              <td>${policy.endDate}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        });
+    }
+
+    // Sayfa yüklendiğinde varsayılan filtreyle poliçeleri getir
+    fetchEndedPolicies();
+  </script>
+</body>
+</html>

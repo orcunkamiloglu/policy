@@ -1,0 +1,25 @@
+{
+  "name": "policy-manager",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "build": "electron-builder",
+    "build:windows": "docker run --rm -v \"${PWD}:/project\" -v \"${PWD}/dist:/project/dist\" electronuserland/builder:wine npx electron-builder --win --x64"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.example.policymanager",
+    "productName": "Policy Manager",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
+  }
+}
