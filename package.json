@@ -30,9 +30,11 @@
     "vite": "^5.0.12",
     "wait-on": "^7.2.0"
   },
+  "author": "Orcun",
   "build": {
     "appId": "com.insurance.policymanager",
     "productName": "Insurance Manager",
+    "publish": null,
     "directories": {
       "output": "dist"
     },
