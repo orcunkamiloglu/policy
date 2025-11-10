@@ -1,10 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { app } = require('electron');
 
 class Database {
   constructor() {
-    this.dataPath = path.join(__dirname, '../data/insurances.json');
+    // Use app.getPath('userData') for cross-platform writable directory
+    const userDataPath = app.getPath('userData');
+    this.dataPath = path.join(userDataPath, 'insurances.json');
     this.data = this.loadData();
   }
 
